@@ -14,8 +14,8 @@
             </a>
             <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="/doctors">All Projects</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="/doctors/add-doctor">Add Project</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{route('project.index')}}">All Projects</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{route('project.createView')}}">Add Project</a></li>
                 </ul>
             </div>
         </li>
@@ -36,18 +36,18 @@
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
                 <i class="icon-columns menu-icon"></i>
-                <span class="menu-title">Patients</span>
+                <span class="menu-title">Tasks</span>
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="charts">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"><a class="nav-link" href="{{asset('/patients')}}">All Patients</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{asset('/patients/add-patient')}}">Add Patient</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{route('task.index')}}">All Tasks</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{route('task.createView')}}">Add Task</a></li>
                 </ul>
             </div>
         </li>
 
-        <li class="nav-item">
+        <!-- <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
                 <i class="icon-columns menu-icon"></i>
                 <span class="menu-title">Drugs</span>
@@ -100,6 +100,6 @@
                             <li class="nav-item"> <a class="nav-link" href="/departments/add-department"> Add Department </a></li>
                         </ul>
                     </div>
-                </li>
+                </li> -->
     </ul>
 </nav>

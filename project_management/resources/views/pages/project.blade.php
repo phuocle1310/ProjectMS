@@ -8,17 +8,17 @@
         </div>
     </div>
 </div>
-<!-- <h4 class="card-title">{{ $title }}</h4> -->
 
 <div style="width: auto">
     <table id="mytable" class="display expandable-table" style="width: 100%; text-align: center">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Name</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Role</th>
+                <th>Project</th>
+                <th>Leader</th>
+                <th>Description</th>
+                <th>Deadline</th>
+                <th>Process</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -39,23 +39,25 @@
             // scrollX: true,
             // scrollY: true,
             ajax: {
-                url: "{{ route('user.api') }}",
+                url: "{{ route('project.api') }}",
             },
             columns: [
                 { data: 'id', name: 'id'},
-                { data: 'name', name: 'name' },
-                { data: 'username', name: 'username' },
-                { data: 'email', name: 'email' },
-                { data: 'role', name: 'roles.role' },
+                { data: 'project', name: 'project' },
+                { data: 'name', name: 'users.name' },
+                { data: 'description', name: 'description' },
+                { data: 'deadline', name: 'deadline' },
+                { data: 'process', name: 'process' },
                 { 
                     data: 'Action',
-                    targets: 5,
+                    targets: 6,
                     orderable: false,
                     searchable: false,
                     render: function(data, type, row, meta) {
                         let id = data['delete'].slice(-1);
                         return `
                         <div class="dropdown">
+                        @if(auth()->user()->role->role != 'user')
                             <button type="button" class="btn btn-outline-info dropdown-toggle" id="dropdownMenuIconButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="ti-settings"></i>
                             </button>
@@ -63,15 +65,14 @@
                                 <a class="dropdown-item" href=" ${data['edit']}">
                                     Edit
                                 </a>
-                                @if(auth()->user()->role->role != 'user')
                                     <form onsubmit="return false;" action="${data['delete']}" method="delete" id="${id}">
                                         @csrf
                                         <button id="${data['delete']}" type="submit" class="dropdown-item" onclick="formDelete(this.id)">
                                             Delete
                                         </button>
                                     </form>
-                                @endif
                             </div>
+                            @endif
                         </div>
                         `;
                     } 

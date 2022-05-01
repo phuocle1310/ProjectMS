@@ -27,6 +27,7 @@
 
 </head>
 <body>
+
 <div class="container-scroller">
     @include('layout.header')
         <div class="container-fluid page-body-wrapper" >

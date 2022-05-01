@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Project;
+namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class CreateRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,43 +26,36 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'project' => [
+            'username' => [
                 'bail',
                 'required',
-                'string',
-                'unique:App\Models\Project,project'
+                Rule::exists(User::class, 'username')
             ],
-            'description' => [
+            'password' => [
                 'bail',
                 'required',
-            ],
-            'deadline' => [
-                'bail',
-                'required',
-                'after:today'
-            ],
-            'userid' => [
-                'bail',
-                'required',
-                'gt:0',
+                'max:10',
+                'min:3',
             ],
         ];
     }
-
+    /**
+     * Get the validation message that return after request.
+     *
+     * @return array
+     */
     public function messages() : array
     {
         return [
             'required' => ':attribute is required',
-            'gt' => ':attribute must be chosen', 
+            "exists" => ":attribute isn'\t exist",
         ];
     }
     public function attributes() : array
     {
         return [
-            'project' => 'Project\'s Name',
-            'description' => 'Description',
-            'deadline' => 'Deadline',
-            'userid' => 'Admin'
+            'password' => 'Password',
+            'username' => 'Username',
         ];
     }
 }

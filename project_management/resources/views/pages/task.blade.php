@@ -15,10 +15,11 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Name</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Role</th>
+                <th>Project</th>
+                <th>Staff</th>
+                <th>Mission</th>
+                <th>Description</th>
+                <th>Status</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -36,17 +37,22 @@
             lengthMenu: [5, 10, 15],
             paging: true,
             serverSide: true,
-            // scrollX: true,
-            // scrollY: true,
+            scrollX: true,
+            scrollY: true,
             ajax: {
-                url: "{{ route('user.api') }}",
+                url: "{{ route('task.api') }}",
             },
             columns: [
-                { data: 'id', name: 'id'},
-                { data: 'name', name: 'name' },
-                { data: 'username', name: 'username' },
-                { data: 'email', name: 'email' },
-                { data: 'role', name: 'roles.role' },
+                { data: 'id', name: 'tasks.id'},
+                { data: 'project', name: 'projects.project' },
+                { data: 'name', name: 'users.name' },
+                { data: 'mission', name: 'mission' },
+                { data: 'description', name: 'description' },
+                { data: 'status', name: 'status',
+                    render: function (data, type, row, meta) {
+                        return data == 1 ? 'Processing' : 'Done';
+                    }
+                },
                 { 
                     data: 'Action',
                     targets: 5,
@@ -54,6 +60,7 @@
                     searchable: false,
                     render: function(data, type, row, meta) {
                         let id = data['delete'].slice(-1);
+                        // console.log(data['edit']);
                         return `
                         <div class="dropdown">
                             <button type="button" class="btn btn-outline-info dropdown-toggle" id="dropdownMenuIconButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
