@@ -65,5 +65,6 @@ Route::group([
     Route::delete('/task-delete/{taskId}', [TaskController::class, 'delete'])->name('task.delete');
 
     Route::get('/task/api', [TaskController::class, 'api'])->name('task.api');
+    Route::get('/task/api/user/{projectId}', [TaskController::class, 'apiGetUser'])->name('task.api.getUser');
 });
 

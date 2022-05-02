@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Task\CreateRequest;
 use App\Http\Requests\Task\DeleteRequest;
 use App\Http\Requests\Task\UpdateRequest;
+use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
+use Carbon\Carbon;
 use Carbon\Exceptions\Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -80,31 +83,42 @@ class TaskController extends Controller
 
      public function createView(Request $request)
 	 {
-        if(!Auth::check()) {
+        if(!Auth::check() || Auth::user()->role->role == 'user') {
             abort(403);
         }
-        if($request->user()->role->role == 'root') {
-            $roles = Role::all();
-        }
-        else {
-            $roles = Role::query()->where('role', '<>', 'root')->get();
-        }
-        return view('pages.add_task', compact('roles'));
+        $projects = Project::query()->where('deadline', '>=', Carbon::now())->get();
+        // dd($projects);
+        return view('pages.add_task', compact('projects'));
 	 }
+
+     public function apiGetUser($projectId) {
+        if(!Auth::check() || Auth::user()->role->role == 'user') {
+            abort(403);
+        }
+        $data = User::query()->getQuery()->selectRaw("users.id, users.name")
+                    ->join('roles', 'users.roleid','=','roles.id')
+                    ->whereRaw("roles.role = 'user' and users.id not in (select tasks.userid from tasks 
+                                where tasks.projectid = ".$projectId.")")->get();
+        // dd($data);
+        return response($data, 200);
+     }
 
      public function create(CreateRequest $request)
 	 {
-        if(Auth::check()) {
+        if(!Auth::check() || Auth::user()->role->role == 'user') {
             abort(403);
         }
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->get('email');
-        $user->username = $request->get('username');
-        $user->roleid = $request->get('roleid');
-		$user->password = Hash::make($request->password);
-        $user->save();
-        return redirect()->action([UserController::class, 'createView'])->with('success', 'Created Successfully');
+        try {
+            $task = new Task();
+            $task->projectid = $request->get('projectid');
+            $task->userid = $request->get('userid');
+            $task->mission = $request->get('mission');
+            $task->description = $request->get('description');
+            $task->save();
+        } catch (Exception $e) {
+            return redirect()->route("layout.base");
+        }
+        return redirect()->action([TaskController::class, 'createView'])->with('success', 'Created Successfully');
 	 }
 
      public function editView($taskId)

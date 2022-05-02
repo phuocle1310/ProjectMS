@@ -25,7 +25,7 @@ class UpdateRequest extends FormRequest
      */
     public function rules()
     {
-        // dd($this->userId);
+        dd($this->userId);
         return [
             'name' => [
                 'bail',

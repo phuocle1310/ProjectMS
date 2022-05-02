@@ -12,7 +12,7 @@
     <div class="card">
         <div class="card-body">
             <!-- <h4 class="card-title">{{ $title }}</h4> -->
-            <form method="post" action="{{route('user.create')}}">
+            <form method="post" action="{{route('task.create')}}">
                 @csrf
                 <p class="card-description">
                 {{ $title }} Info
@@ -29,12 +29,22 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Project</label>
                             <div class="col-sm-9">
-                                <select class="form-control" name="roleid">
+                                <select class="form-control" name="projectid" id="project-select" onclick="getStaff(this)">
                                 <option selected value="0">Choose project</option>
                                     @foreach($projects as $each)
-                                        <option selected value="{{$each->id}}">{{$each->project}}</option>
+                                        @if (old('projectid') == $each->id)
+                                            <option value="{{ $each->id }}" selected>{{ $each->project}}</option>
+                                        @else
+                                            <option value="{{ $each->id }}">{{ $each->project }}</option>
+                                        @endif
                                     @endforeach
+                                   
                                 </select>
+                                @if($errors->has('projectid'))
+                                    <span class="text-danger">
+                                        {{ $errors->first('projectid') }}
+                                    </span>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -42,12 +52,14 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Staff</label>
                             <div class="col-sm-9">
-                                <select class="form-control" name="roleid">
-                                <option selected value="0">Choose user</option>
-                                    @foreach($users as $each)
-                                        <option selected value="{{$each->id}}">{{$each->user}}</option>
-                                    @endforeach
+                                <select class="form-control" name="userid" id="user-select">
+                                
                                 </select>
+                                @if($errors->has('userid'))
+                                    <span class="text-danger">
+                                        {{ $errors->first('userid') }}
+                                    </span>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -98,3 +110,29 @@
     </div>
 </div>
 @stop
+@push('js')
+<script>
+        getStaff = function(object) {
+            var url = "{{ route('task.api.getUser', "+id+") }}";
+            url = url.replace("+id+", object.value);
+
+            var userSelect = $("#user-select").html("");
+            if(object.value != 0) {
+                $.ajax({
+                    type: "get",
+                    url: url,
+                    success: function (data, status) {
+                        userSelect.append("<option value=\"0\" selected>Choose staff</option>");
+                        $(data).each(function(i) {
+                            userSelect.append("<option value=\""+data[i].id+"\">"+data[i].name+"</option>");
+                        });
+                    },
+                    error: function (data, status) {
+                        alert("Can not get staff");
+                    },
+                });
+            }
+        }
+        
+</script>
+@endpush

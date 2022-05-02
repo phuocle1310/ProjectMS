@@ -52,10 +52,11 @@
                             <div class="col-sm-9">
                                 <select class="form-control" name="roleid">
                                     @foreach($roles as $each)
-                                    <!-- <c:forEach items="${roles}" var="role">
-                                        <option selected value="${role.id}">${role.role}</option>
-                                    </c:forEach> -->
-                                        <option selected value="{{$each->id}}">{{$each->role}}</option>
+                                        @if (old('roleid') == $each->id)
+                                            <option value="{{ $each->id }}" selected>{{ $each->role}}</option>
+                                        @else
+                                            <option value="{{ $each->id }}">{{ $each->role }}</option>
+                                        @endif
                                     @endforeach
                                 </select>
                             </div>

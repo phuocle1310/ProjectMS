@@ -11,7 +11,6 @@
 <div class="col-12 grid-margin">
     <div class="card">
         <div class="card-body">
-            <!-- <h4 class="card-title">{{ $title }}</h4> -->
             <form method="post" action="{{route('project.create')}}">
                 @csrf
                 <p class="card-description">
@@ -45,7 +44,11 @@
                                 <select class="form-control" name="userid">
                                 <option selected value="0">Choose admin</option>
                                     @foreach($users as $each)
-                                        <option value="{{$each->id}}">{{$each->name}}</option>
+                                        @if (old('userid') == $each->id)
+                                            <option value="{{ $each->id }}" selected>{{ $each->name}}</option>
+                                        @else
+                                            <option value="{{ $each->id }}">{{ $each->name }}</option>
+                                        @endif
                                     @endforeach
                                 </select>
                                 @if($errors->has('userid'))
@@ -87,21 +90,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="row">
-                    <div class="col-md-9">
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Process</label>
-                            <div class="col-sm-9">
-                                <input type="number" min="0" max="100" class="form-control" name="process" required="true;"  value="{{ old('process') }}"/>
-                                @if($errors->has('process'))
-                                    <span class="text-danger">
-                                        {{ $errors->first('process') }}
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
                 <div class="row">
                     <div class="col-sm-12 text-right">
                         <button type="submit" class="btn btn-outline-primary" id="create">

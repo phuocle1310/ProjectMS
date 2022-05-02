@@ -96,13 +96,18 @@ class UserController extends Controller
         if(Auth::check()) {
             abort(403);
         }
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->get('email');
-        $user->username = $request->get('username');
-        $user->roleid = $request->get('roleid');
-		$user->password = Hash::make($request->password);
-        $user->save();
+        try {
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->get('email');
+            $user->username = $request->get('username');
+            $user->roleid = $request->get('roleid');
+            $user->password = Hash::make($request->password);
+            $user->save();
+        } catch (Exception $e) {
+            return redirect()->route("layout.base");
+        }
+
         return redirect()->action([UserController::class, 'createView'])->with('success', 'Created Successfully');
 	 }
 
