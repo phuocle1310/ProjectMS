@@ -9,7 +9,13 @@ class Task extends Model
 {
     use HasFactory;
     public $timestamps = false;
-
+    protected $fillable = [
+        'projectid',
+        'userid',
+        'mission',
+        'status',
+        'description',
+    ];
 
     public function User()
     {

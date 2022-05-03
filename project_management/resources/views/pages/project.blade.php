@@ -47,7 +47,11 @@
                 { data: 'name', name: 'users.name' },
                 { data: 'description', name: 'description' },
                 { data: 'deadline', name: 'deadline' },
-                { data: 'process', name: 'process' },
+                { data: 'process', name: 'process', 
+                    render: function (data, type, row, meta) {
+                        return data + '%';
+                    }
+                },
                 { 
                     data: 'Action',
                     targets: 6,

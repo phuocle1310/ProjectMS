@@ -34,7 +34,7 @@
     } else if (type === 'success-message') {
       swal({
         title: 'Congratulations!',
-        text: 'Delete Successfully!!',
+        text: 'Successfully!!',
         icon: 'success',
         button: {
           text: "Continue",

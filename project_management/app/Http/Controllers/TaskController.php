@@ -57,12 +57,15 @@ class TaskController extends Controller
             $test = $this->model->getQuery()->selectRaw("tasks.*, projects.project, users.name")
             ->join('projects', 'tasks.projectid','=','projects.id')
             ->join('users', 'tasks.userid','=','users.id')
-            // ->fromRaw("tasks inner join users on tasks.userid = users.id")
-            // ->fromRaw("tasks inner join projects on tasks.projectid = projects.id")
             ->whereRaw("projects.id in (SELECT projects.id FROM users 
                 inner join projects on users.id = projects.userid 
                 where projects.userid = ".$user->id.")");
-            
+        }
+        else {
+            $test = $this->model->getQuery()->join('projects', 'tasks.projectid','=','projects.id')
+                                            ->join('users', 'tasks.userid','=','users.id')
+                                            ->where('tasks.userid', $user->id)
+                                            ->select(['tasks.*', 'projects.project', 'users.name']);
         }
         // $test = $this->model->getQuery()->join('roles', 'users.roleid','=','roles.id')
         // ->select(['users.*', 'roles.role']);
@@ -77,6 +80,7 @@ class TaskController extends Controller
             $arr = [];
             $arr['edit'] = route('task.editView', $object);
             $arr['delete'] = route('task.delete', $object);
+            $arr['update'] = route('task.update', $object);
             return $arr;
         })->make(true);
 	 }
@@ -86,7 +90,8 @@ class TaskController extends Controller
         if(!Auth::check() || Auth::user()->role->role == 'user') {
             abort(403);
         }
-        $projects = Project::query()->where('deadline', '>=', Carbon::now())->get();
+        $projects = Project::query()->where('deadline', '>=', Carbon::now())
+                                    ->where('process', '<', 100)->get();
         // dd($projects);
         return view('pages.add_task', compact('projects'));
 	 }
@@ -121,31 +126,63 @@ class TaskController extends Controller
         return redirect()->action([TaskController::class, 'createView'])->with('success', 'Created Successfully');
 	 }
 
-     public function editView($taskId)
+     public function update($taskId)
 	 {
         if(!Auth::check()) {
+            abort(403);
+        }
+        
+        $arr = [];
+        try {
+            $object = $this->model->where('id', $taskId)->first();
+            // dd($object->get());
+            if($object == null)
+                abort(404);
+            else {
+                $object->status = 0;
+                $object->save();
+
+                // update processing of project
+                $project = Project::query()->find($object->id);
+                $tasks_of_project = Task::query()->where('projectid', $object->id)->get();
+                $total_tasks = count($tasks_of_project);
+                $done_tasks_of_project = Task::query()->where('projectid', $object->id)
+                                                    ->where('status', 0)->get();
+                $total_done_tasks = count($done_tasks_of_project);
+                $project->process = round($total_done_tasks/$total_tasks * 100, 2);
+                $project->save();
+            }
+            $arr['status'] = true;
+            $arr['message'] = 'Update status Successfully';
+            return response($arr, 200);
+        } catch (Exception $e) {
+            $arr['status'] = false;
+            $arr['message'] = 'Update status Failed';
+        }
+        return response($arr, 400);
+	 
+    }
+     public function editView($taskId)
+	 {
+        if(!Auth::check() || Auth::user()->role->role == 'user') {
             abort(403);
         }
         $object = $this->model->where('id', $taskId)->first();
         if($object == null)
             abort(404);
-        $roles = Role::all();
         return view('pages.edit_task', [
                 'each' => $object,
-                'roles' => $roles,
             ]
         );
 	 }
      
      public function edit(UpdateRequest $request, $taskId)
 	 {
-        if(Auth::check())
+        if(Auth::check() || Auth::user()->role->role != 'user')
         {
             $object = $this->model->find($taskId);
             $arr = $request->validated();
-            if($arr['password'] != $object->getAttribute('password')) {
-                $arr['password'] = Hash::make($request->password);
-            }
+            // dd($request->validated());
             $object->fill($arr);
             $object->save();
             return redirect()->route('task.index');

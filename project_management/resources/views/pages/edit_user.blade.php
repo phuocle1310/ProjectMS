@@ -30,14 +30,6 @@
                                         {{ $errors->first('name') }}
                                     </span>
                                 @endif
-                                <!-- <select class="form-control" path="doctor" id="doctor" onchange="isNull()">
-                                    <option value="">Choose the doctor</option>
-                                    <c:forEach items="${doctors}" var="doctor">
-                                        <c:if test="${doctor.account.id == null}">
-                                            <option value="${doctor.id}">${doctor.name}</option>
-                                        </c:if>
-                                    </c:forEach>
-                                </select> -->
                             </div>
                         </div>
                     </div>

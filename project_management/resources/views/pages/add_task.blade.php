@@ -100,7 +100,7 @@
                         <button type="submit" class="btn btn-outline-primary" id="create">
                             <div class="row">
                                 <div class="col-sm-1"><i class="mdi mdi-account-plus"></i></div>
-                                <div class="col-sm-9"><strong> Create Project</strong></div>
+                                <div class="col-sm-9"><strong> Create Task</strong></div>
                             </div>
                         </button>
                     </div>

@@ -63,6 +63,8 @@ Route::group([
     Route::get('/task-editView/{taskId}', [TaskController::class, 'editView'])->name('task.editView');
     Route::put('/task-edit/{taskId}', [TaskController::class, 'edit'])->name('task.edit');
     Route::delete('/task-delete/{taskId}', [TaskController::class, 'delete'])->name('task.delete');
+    Route::patch('/task-update/{taskId}', [TaskController::class, 'update'])->name('task.update');
+
 
     Route::get('/task/api', [TaskController::class, 'api'])->name('task.api');
     Route::get('/task/api/user/{projectId}', [TaskController::class, 'apiGetUser'])->name('task.api.getUser');
