@@ -15,10 +15,13 @@
             <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item"> <a class="nav-link" href="{{route('project.index')}}">All Projects</a></li>
+                    @if(auth()->user()->role->role != 'user')
                     <li class="nav-item"> <a class="nav-link" href="{{route('project.createView')}}">Add Project</a></li>
+                    @endif
                 </ul>
             </div>
         </li>
+        @if(auth()->user()->role->role != 'user')
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#shift" aria-expanded="false" aria-controls="form-elements">
                 <i class="icon-columns menu-icon"></i>
@@ -32,7 +35,7 @@
                 </ul>
             </div>
         </li>
-
+        @endif
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
                 <i class="icon-columns menu-icon"></i>
@@ -42,7 +45,9 @@
             <div class="collapse" id="charts">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item"><a class="nav-link" href="{{route('task.index')}}">All Tasks</a></li>
+                    @if(auth()->user()->role->role != 'user')
                     <li class="nav-item"><a class="nav-link" href="{{route('task.createView')}}">Add Task</a></li>
+                    @endif
                 </ul>
             </div>
         </li>

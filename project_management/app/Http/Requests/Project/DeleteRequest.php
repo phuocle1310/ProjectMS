@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\Project;
 
+use App\Models\Project;
+use App\Rules\DeleteProject;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DeleteRequest extends FormRequest
 {
@@ -24,7 +27,15 @@ class DeleteRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'projectId' => [
+                'required',
+                Rule::exists(Project::class, 'id'),
+                new DeleteProject($this->id),
+            ],
         ];
+    }
+    protected function prepareForValidation()
+    {
+        $this->merge(['projectId' => $this->route('projectId')]);
     }
 }

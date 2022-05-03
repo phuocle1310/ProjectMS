@@ -9,7 +9,13 @@ class Project extends Model
 {
     use HasFactory;
     public $timestamps = false;
-
+    protected $fillable = [
+        'project',
+        'userid',
+        'deadline',
+        'process',
+        'description',
+    ];
 
     public function User()
     {

@@ -6,6 +6,7 @@ use App\Http\Requests\Project\CreateRequest;
 use App\Http\Requests\Project\DeleteRequest;
 use App\Http\Requests\Project\UpdateRequest;
 use App\Models\Project;
+use App\Models\Task;
 use App\Models\User;
 use Carbon\Exceptions\Exception;
 use Illuminate\Http\Request;
@@ -112,34 +113,23 @@ class ProjectController extends Controller
         $object = $this->model->where('id', $projectId)->first();
         if($object == null)
             abort(404);
-        $users = User::query()->getQuery()->selectRaw("users.*")
-                ->join("tasks", "users.id", "=", "tasks.userid")
-                ->whereRaw("users.id not in (select users.id from tasks where tasks.projectid = ".$projectId.") 
-                and users.id = ".$projectId);
         return view('pages.edit_project', [
                 'each' => $object,
-                'user' => $users,
             ]
         );
 	 }
      
      public function edit(UpdateRequest $request, $projectId)
 	 {
-        if(Auth::check())
-        {
-            $object = $this->model->find($projectId);
-            $arr = $request->validated();
-            if($arr['password'] != $object->getAttribute('password')) {
-                $arr['password'] = Hash::make($request->password);
-            }
-            $object->fill($arr);
-            $object->save();
-            return redirect()->route('project.index');
-        }
-        else {
-            dd(0);
+        if(!Auth::check() || Auth::user()->role->role == 'user') {
             abort(403);
         }
+        $object = $this->model->find($projectId);
+        $arr = $request->validated();
+        $object->fill($arr);
+        $object->save();
+        return redirect()->route('project.index');
+        
 	 }
 
      public function delete(DeleteRequest $request, $projectId)
@@ -147,10 +137,17 @@ class ProjectController extends Controller
         if(Auth::check()) {
             $arr = [];
             try {
-                $object = $this->model->where('id', $projectId)->first()->delete();
-                $arr['status'] = true;
-                $arr['message'] = 'Delete Successfully';
-                return response($arr, 200);
+                $tasksOfProject = Task::query()->where('projectid', $projectId)->get();
+                if(count($tasksOfProject) != 0) {
+                    $arr['status'] = false;
+                    $arr['message'] = 'Delete Failed';
+                }
+                else {
+                    $object = $this->model->where('id', $projectId)->first()->delete();
+                    $arr['status'] = true;
+                    $arr['message'] = 'Delete Successfully';
+                    return response($arr, 200);
+                }
             } catch (Exception $e) {
                 $arr['status'] = false;
                 $arr['message'] = 'Delete Failed';

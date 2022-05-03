@@ -143,10 +143,10 @@ class TaskController extends Controller
                 $object->save();
 
                 // update processing of project
-                $project = Project::query()->find($object->id);
-                $tasks_of_project = Task::query()->where('projectid', $object->id)->get();
+                $project = Project::query()->find($object->projectid);
+                $tasks_of_project = Task::query()->where('projectid', $object->projectid)->get();
                 $total_tasks = count($tasks_of_project);
-                $done_tasks_of_project = Task::query()->where('projectid', $object->id)
+                $done_tasks_of_project = Task::query()->where('projectid', $object->projectid)
                                                     ->where('status', 0)->get();
                 $total_done_tasks = count($done_tasks_of_project);
                 $project->process = round($total_done_tasks/$total_tasks * 100, 2);
@@ -182,7 +182,6 @@ class TaskController extends Controller
         {
             $object = $this->model->find($taskId);
             $arr = $request->validated();
-            // dd($request->validated());
             $object->fill($arr);
             $object->save();
             return redirect()->route('task.index');
@@ -197,10 +196,30 @@ class TaskController extends Controller
         if(Auth::check()) {
             $arr = [];
             try {
-                $object = $this->model->where('id', $taskId)->first()->delete();
-                $arr['status'] = true;
-                $arr['message'] = 'Delete Successfully';
-                return response($arr, 200);
+                $object = $this->model->where('id', $taskId)->where('status', 1)->first();
+                if($object == null) {
+                    $arr['status'] = false;
+                    $arr['message'] = 'Delete Failed';
+                }
+                else {
+                    $object->delete();
+                    $arr['status'] = true;
+                    $arr['message'] = 'Delete Successfully';
+
+                    // update project process
+                    $project = Project::query()->find($object->projectid);
+                    
+                    $tasks_of_project = Task::query()->where('projectid', $object->projectid)->get();
+                    $total_tasks = count($tasks_of_project);
+                    $done_tasks_of_project = Task::query()->where('projectid', $object->projectid)
+                                                        ->where('status', 0)->get();
+                    $total_done_tasks = count($done_tasks_of_project);
+                    $project->process = round($total_done_tasks/$total_tasks * 100, 2);
+                    
+                    $project->save();
+
+                    return response($arr, 200);
+                }  
             } catch (Exception $e) {
                 $arr['status'] = false;
                 $arr['message'] = 'Delete Failed';

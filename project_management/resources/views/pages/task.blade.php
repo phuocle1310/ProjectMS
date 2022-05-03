@@ -78,7 +78,7 @@
                                         Edit
                                     </a>
                                 
-                                    <form onsubmit="return false;" action="${data['delete']}" method="delete" id="${id}">
+                                    <form onsubmit="return false;" action="${data['delete']}" method="delete" id="${id}d">
                                         @csrf
                                         <button id="${data['delete']}" type="submit" class="dropdown-item" onclick="formDelete(this.id)">
                                             Delete
@@ -94,8 +94,8 @@
         });
 
         formDelete = function(click_id) {
-            let id = click_id.slice(-1); // get value id column
-            var frm = document.getElementById(id); // get form on button delete
+            let id = click_id.slice(-1) + "d"; // get value id column
+            let frm1 = document.getElementById(id); // get form on button delete
             var rowDeleted = table.row({'id': id}).select(); // get row prepared to delete
             swal({
                 title: 'Are you sure?',
@@ -123,9 +123,11 @@
             }).then(function (isConfirm) {
                 if(isConfirm) {
                     $.ajax({
-                        type: frm.getAttribute('method'),
-                        url: frm.getAttribute('action'),
+                        type: frm1.getAttribute('method'),
+                        url: frm1.getAttribute('action'),
                         success: function (data, status) {
+                            console.log(data);
+                            console.log(frm1.getAttribute('action'));
                             rowDeleted.remove().draw(false);
                             alert('success-message', id);
                         },
@@ -139,7 +141,7 @@
 
         formUpdate = function(click_id) {
             let id = click_id.slice(-1); // get value id column
-            var frm = document.getElementById(id); // get form on button delete
+            let frm = document.getElementById(id); // get form on button delete
             var rowUpdate = table.row({'id': id}).select(); // get row prepared to delete
             swal({
                 title: 'Are you sure?',
