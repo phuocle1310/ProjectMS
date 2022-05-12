@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
@@ -32,16 +33,14 @@ Route::group([
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::get('/', function () {
-        return view('layout.base');
-    })->name('home');
+    Route::get('/', [Controller::class, 'index'])->name('home');
     Route::get('/user', [UserController::class, 'index'])->name('user.index');
     Route::get('/user-createView', [UserController::class, 'createView'])->name('user.createView');
     Route::post('/user-create', [UserController::class, 'create'])->name('user.create');
     Route::get('/user-editView/{userId}', [UserController::class, 'editView'])->name('user.editView');
     Route::put('/user-edit/{userId}', [UserController::class, 'edit'])->name('user.edit');
     Route::delete('/user-delete/{userId}', [UserController::class, 'delete'])->name('user.delete');
-
+    Route::patch('/user-changePassword/{userId}', [UserController::class, 'changePassword'])->name('user.changePassword');
     Route::get('/user/api', [UserController::class, 'api'])->name('user.api');
 
     // Route table project

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\ChangePasswordRequest;
 use App\Http\Requests\User\UpdateRequest;
 use App\Http\Requests\User\CreateRequest;
 use App\Http\Requests\User\DeleteRequest;
@@ -151,6 +152,33 @@ class UserController extends Controller
             $arr = [];
             try {
                 $object = $this->model->where('id', $userId)->first()->delete();
+                $arr['status'] = true;
+                $arr['message'] = 'Delete Successfully';
+                return response($arr, 200);
+            } catch (Exception $e) {
+                $arr['status'] = false;
+                $arr['message'] = 'Delete Failed';
+            }
+            return response($arr, 400);
+        }
+        else {
+            abort(403);
+        }
+	 }
+
+     public function changePassword(ChangePasswordRequest $request, $userId)
+	 {
+        if(Auth::check()) {
+            $arr = [];
+            try {
+                $object = $this->model->where('id', $userId)->first();
+                $arr = $request->validated();
+                $same = password_verify($arr['newPassword'], $object->getAttribute('password'));
+                if(!$same) {
+                    $object->password = Hash::make($request->newPassword);
+                    $object->save();
+                }
+
                 $arr['status'] = true;
                 $arr['message'] = 'Delete Successfully';
                 return response($arr, 200);

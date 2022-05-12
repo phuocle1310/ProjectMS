@@ -3,10 +3,11 @@
 namespace App\Http\Requests\User;
 
 use App\Models\User;
+use App\Rules\ChangePassword;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateRequest extends FormRequest
+class ChangePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,22 +26,27 @@ class UpdateRequest extends FormRequest
      */
     public function rules()
     {
+        $currentPassword = $this->password;
+        $userid = $this->userId;
+        // dd($currentPassword);
         return [
-            'name' => [
-                'bail',
-                'required',
-                'string',
-            ],
-            'email' => [
-                'bail',
-                'required',
-                Rule::unique(User::class)->ignore($this->userId),
-            ],
             'password' => [
                 'bail',
                 'required',
                 'max:100',
                 'min:3',
+                new ChangePassword($this->userId, $this->password),
+            ],
+            'newPassword' => [
+                'bail',
+                'required',
+                'max:100',
+                'min:3',
+            ],
+            'confirmPassword' => [
+                'bail',
+                'required',
+                'same:newPassword',
             ],
         ];
     }
@@ -48,15 +54,15 @@ class UpdateRequest extends FormRequest
     {
         return [
             'required' => ':attribute is required',
+            'exists' => ':attribute is incorrect'
         ];
     }
     public function attributes() : array
     {
         return [
-            'name' => 'Staff\'s Name',
-            'email' => 'Email',
-            'password' => 'Password',
-            'username' => 'Username',
+            'confirmPassword' => 'Confirm Password',
+            'password' => 'Current Password',
+            'newPassword' => 'New Password',
         ];
     }
 }

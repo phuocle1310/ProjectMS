@@ -73,7 +73,8 @@ class TaskController extends Controller
         
         // $query = $this->model->with('role')->get(); // with ['relationship: name function relationship define in Model']
         // return object type
-        // => can not search relationship column 
+        // => can not search relationship column
+        
         return DataTables::of($query)
         ->addColumn('Action', function($object){
             // dd($object);
