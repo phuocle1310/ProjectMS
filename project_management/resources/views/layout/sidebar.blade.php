@@ -15,7 +15,7 @@
             <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item"> <a class="nav-link" href="{{route('project.index')}}">All Projects</a></li>
-                    @if(auth()->user()->role->role != 'user')
+                    @if(auth()->user()->role->role == 'root')
                     <li class="nav-item"> <a class="nav-link" href="{{route('project.createView')}}">Add Project</a></li>
                     @endif
                 </ul>
