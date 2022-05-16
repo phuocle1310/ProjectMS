@@ -27,10 +27,10 @@
                     <strong>{{ auth()->user()->role->role }}: {{ auth()->user()->name }}</strong>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                    <a class="dropdown-item">
+                    <!-- <a class="dropdown-item">
                         <i class="ti-settings text-primary"></i>
                         Settings
-                    </a>
+                    </a> -->
                     <button type="button" class="dropdown-item" data-toggle="modal" data-target="#mymodal" data-whatever="changePassword">
                         <i class="ti-key text-primary"></i>
                         Change Password
@@ -116,7 +116,9 @@
                 let currentPassword = document.getElementById('errorCurrentPassword');
                 let newPassword = document.getElementById('errorNewPassword');
                 let confirmPassword = document.getElementById('errorConfirmPassword');
-                if(xhr.responseJSON in xhr.responseJSON) {
+                // console.log(xhr.responseJSON.errors.password);
+                // if(xhr.responseJSON.errors in xhr.responseJSON) {
+                    // console.log("blb");
                     if(!(xhr.responseJSON.errors.password in xhr.responseJSON.errors))
                         currentPassword.innerText = "";
                     if(!(xhr.responseJSON.errors.newPassword in xhr.responseJSON.errors))
@@ -127,6 +129,7 @@
 
                     $.each(xhr.responseJSON.errors, function (key, item) 
                     {
+                        
                         switch(key) {
                             case "password":
                                 if(item != null && item != "")
@@ -144,7 +147,7 @@
                                 // code block
                             }
                     });
-                }
+                // }
                 alert('title-and-text', 0);
             },
         });

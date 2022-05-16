@@ -66,7 +66,7 @@ class UserController extends Controller
         // ->select(['users.*', 'roles.role']);
         $query = $this->model->setQuery($test);
         
-        // $query = $this->model->with('role')->get(); // with ['relationship: name function relationship define in Model']
+        // $query = $this->model->with('role')->get(); // with ['relationship: name function relationship defined in Model']
         // return object type
         // => can not search relationship column 
         return Datatables::of($query)
@@ -87,7 +87,7 @@ class UserController extends Controller
             $roles = Role::all();
         }
         else {
-            $roles = Role::query()->where('role', '<>', 'root')->get();
+            $roles = Role::query()->where('role', 'user')->get();
         }
         return view('pages.add_user', compact('roles'));
 	 }
@@ -151,10 +151,24 @@ class UserController extends Controller
         if(Auth::check()) {
             $arr = [];
             try {
-                $object = $this->model->where('id', $userId)->first()->delete();
-                $arr['status'] = true;
-                $arr['message'] = 'Delete Successfully';
-                return response($arr, 200);
+                if(Auth::user()->role->role == "admin") {
+                    $object = $this->model->where('id', $userId)->first();
+                    if($object->role->role == "user") {
+                        $object->delete();
+                        $arr['status'] = true;
+                        $arr['message'] = 'Delete Successfully';
+                        return response($arr, 200);
+                    }
+                }
+                if(Auth::user()->role->role == "root") {
+                    $object = $this->model->where('id', $userId)->first();
+                    if($object->role->role != "root") {
+                        $object->delete();
+                        $arr['status'] = true;
+                        $arr['message'] = 'Delete Successfully';
+                        return response($arr, 200);
+                    }
+                }
             } catch (Exception $e) {
                 $arr['status'] = false;
                 $arr['message'] = 'Delete Failed';
@@ -173,6 +187,11 @@ class UserController extends Controller
             try {
                 $object = $this->model->where('id', $userId)->first();
                 $arr = $request->validated();
+                if(Auth::user()->id != $object->id) {
+                    $arr['status'] = false;
+                    $arr['message'] = 'Change Password Failed';
+                    return response($arr, 400);
+                }
                 $same = password_verify($arr['newPassword'], $object->getAttribute('password'));
                 if(!$same) {
                     $object->password = Hash::make($request->newPassword);
@@ -180,11 +199,11 @@ class UserController extends Controller
                 }
 
                 $arr['status'] = true;
-                $arr['message'] = 'Delete Successfully';
+                $arr['message'] = 'Change Password Successfully';
                 return response($arr, 200);
             } catch (Exception $e) {
                 $arr['status'] = false;
-                $arr['message'] = 'Delete Failed';
+                $arr['message'] = 'Change Password Failed';
             }
             return response($arr, 400);
         }

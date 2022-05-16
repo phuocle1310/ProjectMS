@@ -26,8 +26,6 @@ class ChangePasswordRequest extends FormRequest
      */
     public function rules()
     {
-        $currentPassword = $this->password;
-        $userid = $this->userId;
         // dd($currentPassword);
         return [
             'password' => [

@@ -56,6 +56,7 @@
                         let id = data['delete'].slice(-1);
                         return `
                         <div class="dropdown">
+                        @if(auth()->user()->role->role != 'user')
                             <button type="button" class="btn btn-outline-info dropdown-toggle" id="dropdownMenuIconButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="ti-settings"></i>
                             </button>
@@ -63,15 +64,16 @@
                                 <a class="dropdown-item" href=" ${data['edit']}">
                                     Edit
                                 </a>
-                                @if(auth()->user()->role->role != 'user')
+                                
                                     <form onsubmit="return false;" action="${data['delete']}" method="delete" id="${id}">
                                         @csrf
                                         <button id="${data['delete']}" type="submit" class="dropdown-item" onclick="formDelete(this.id)">
                                             Delete
                                         </button>
                                     </form>
-                                @endif
+                                
                             </div>
+                            @endif
                         </div>
                         `;
                     } 

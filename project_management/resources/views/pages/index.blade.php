@@ -26,7 +26,7 @@
             <div class="col-md-6 mb-4 mb-lg-0 stretch-card transparent">
             <div class="card card-light-blue">
                 <div class="card-body">
-                <p class="mb-4">Cancled projects</p>
+                <p class="mb-4">Out of date projects</p>
                 <p class="fs-30 mb-2">{{ $total_cancel_projects }}/{{ $total_projects }}</p>
                 <p>{{ $percent_cancel_projects }}%</p>
                 </div>
@@ -35,9 +35,9 @@
             <div class="col-md-6 stretch-card transparent">
             <div class="card card-light-danger">
                 <div class="card-body">
-                <p class="mb-4">Number of Tasks</p>
+                <p class="mb-4">Number of User/Project</p>
                 <p class="fs-30 mb-2">{{ $total_tasks }}</p>
-                <p>Avg task/project: {{ $avg_tasks }}</p>
+                <p>Avg user/project: {{ $avg_tasks }}</p>
                 </div>
             </div>
             </div>
