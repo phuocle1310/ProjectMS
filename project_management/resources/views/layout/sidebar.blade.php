@@ -31,7 +31,9 @@
             <div class="collapse" id="shift">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item"> <a class="nav-link" href="{{route('user.index')}}">All Staffs</a></li>
+                    @if(auth()->user()->role->role == 'root')
                     <li class="nav-item"> <a class="nav-link" href="{{route('user.createView')}}">Add Staffs</a></li>
+                    @endif
                 </ul>
             </div>
         </li>
