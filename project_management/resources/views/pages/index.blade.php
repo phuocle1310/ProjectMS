@@ -35,9 +35,9 @@
             <div class="col-md-6 stretch-card transparent">
             <div class="card card-light-danger">
                 <div class="card-body">
-                <p class="mb-4">Number of User/Project</p>
+                <p class="mb-4">Numbers of Task</p>
                 <p class="fs-30 mb-2">{{ $total_tasks }}</p>
-                <p>Avg user/project: {{ $avg_tasks }}</p>
+                <p>Avg tasks/project: {{ $avg_tasks }}</p>
                 </div>
             </div>
             </div>
